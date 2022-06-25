@@ -37,7 +37,7 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
     bg_item = os.listdir(background_path)
     background = Image.open(os.path.join(background_path, random.choice(bg_item))).convert("RGB")
     padding = (10, 50)
-    env = lmdb.open(save_path, map_size=4294967296)
+    env = lmdb.open(save_path, map_size=1099511627776)
     sample = 0
     with env.begin(write=True) as txn:
         for i1, item1 in enumerate(line_dict):
