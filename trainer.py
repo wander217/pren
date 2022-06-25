@@ -86,9 +86,11 @@ class PRENTrainer:
                 self.logger.partition_report()
                 self.logger.time_report("epoch {} - step {}:".format(epoch, self.step))
                 valid_loss = self.valid_step()
+                test_result = self.test_step()
                 self.logger.train_report({
                     "train_loss": train_loss.calc(),
-                    "valid_loss": valid_loss
+                    "valid_loss": valid_loss,
+                    "test_result": test_result
                 })
                 self.logger.partition_report()
                 train_loss.clear()
@@ -108,6 +110,24 @@ class PRENTrainer:
                 loss: Tensor = self.criterion(pred, target)
                 valid_loss.update(loss.item(), bs)
         return valid_loss.calc()
+
+    def test_step(self):
+        self.model.eval()
+        test_acc: Averager = Averager()
+        test_norm: Averager = Averager()
+        with torch.no_grad():
+            for batch, (image, target) in enumerate(self.valid_loader):
+                bs = image.size(0)
+                image = image.to(self.device)
+                target = target.to(self.device)
+                pred: Tensor = self.model(image, target[:, :-1])
+                acc, norm = self._acc(pred, target)
+                test_acc.update(acc, bs)
+                test_norm.update(norm, bs)
+        return {
+            "acc": test_acc.calc(),
+            "norm": test_norm.calc()
+        }
 
     def _acc(self, pred: Tensor, target: Tensor) -> Tuple:
         n_correct: int = 0
