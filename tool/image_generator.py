@@ -41,6 +41,8 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
     sample = 0
     with env.begin(write=True) as txn:
         for i1, item1 in enumerate(line_dict):
+            if i1 % 10000 == 0:
+                print(i1)
             image = generate_image(item1, background, font, padding)
 
             image_code = 'image-%09d' % (i1 + 1)
