@@ -65,6 +65,7 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--font_path", default="", type=str, help="Path of font directory")
     parser.add_argument("-b", "--bg_path", default="", type=str, help="Path of background")
     args = parser.parse_args()
+    os.mkdir(args.save_path)
     for i, item in enumerate(os.listdir(args.font_path)):
         print(item)
         os.mkdir("font_{}".format(i + 1))
