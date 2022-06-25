@@ -24,7 +24,7 @@ class PRENCollate:
         return image_batch, label_batch
 
 
-class ATTRLoader:
+class PRENLoader:
     def __init__(self,
                  num_workers: int,
                  batch_size: int,

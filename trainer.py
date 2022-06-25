@@ -1,9 +1,11 @@
+import argparse
+import warnings
 import numpy as np
 import torch
 import Levenshtein
 from torch import nn, optim, Tensor
 from structure import PRENModel
-from dataset import ATTRLoader, Alphabet
+from dataset import PRENLoader, Alphabet
 from typing import Dict, Tuple
 from utilities.averager import Averager
 from utilities import PRENCheckpoint, PRENLogger
@@ -18,7 +20,6 @@ class PRENTrainer:
                  total_epoch: int,
                  save_interval: int,
                  start_epoch: int,
-                 clip_grad_norm: float,
                  train: Dict,
                  valid: Dict,
                  test: Dict,
@@ -30,7 +31,6 @@ class PRENTrainer:
         self.total_epoch: int = total_epoch
         self.save_interval: int = save_interval
         self.start_epoch: int = start_epoch
-        self.clip_grad_norm: float = clip_grad_norm
 
         self.alphabet: alphabet = Alphabet(**alphabet)
         self.model: nn.Module = PRENModel(**model, alphabet=self.alphabet)
@@ -39,9 +39,9 @@ class PRENTrainer:
         self.criterion = self.criterion.to(self.device)
         cls = getattr(optim, optimizer['name'])
         self.optimizer: optim.Optimizer = cls(self.model.parameters(), **optimizer['params'])
-        self.train_loader = ATTRLoader(**train, alphabet=self.alphabet).build()
-        self.valid_loader = ATTRLoader(**valid, alphabet=self.alphabet).build()
-        self.test_loader = ATTRLoader(**test, alphabet=self.alphabet).build()
+        self.train_loader = PRENLoader(**train, alphabet=self.alphabet).build()
+        self.valid_loader = PRENLoader(**valid, alphabet=self.alphabet).build()
+        self.test_loader = PRENLoader(**test, alphabet=self.alphabet).build()
 
         self.logger: PRENLogger = PRENLogger(**logger)
         self.checkpoint: PRENCheckpoint = PRENCheckpoint(**checkpoint)
@@ -61,10 +61,7 @@ class PRENTrainer:
     def save(self, epoch: int):
         self.logger.partition_report()
         self.logger.time_report("Saving:")
-        self.checkpoint.save(self.model,
-                             self.optimizer,
-                             epoch,
-                             self.step)
+        self.checkpoint.save(self.model, self.optimizer, epoch, self.step)
         self.logger.time_report("Saving complete!")
         self.logger.partition_report()
 
@@ -79,7 +76,6 @@ class PRENTrainer:
             loss: Tensor = self.criterion(pred, target)
             self.model.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip_grad_norm)
             self.optimizer.step()
             train_loss.update(loss.item(), bs)
             if self.step % self.save_interval == 0:
@@ -116,7 +112,7 @@ class PRENTrainer:
         test_acc: Averager = Averager()
         test_norm: Averager = Averager()
         with torch.no_grad():
-            for batch, (image, target) in enumerate(self.valid_loader):
+            for batch, (image, target) in enumerate(self.test_loader):
                 bs = image.size(0)
                 image = image.to(self.device)
                 target = target.to(self.device)
@@ -153,3 +149,20 @@ class PRENTrainer:
             self.optimizer.load_state_dict(state_dict['optimizer'])
             self.start_epoch = state_dict['epoch'] + 1
             self.step = state_dict['step'] + 1
+
+
+if __name__ == "__main__":
+    warnings.filterwarnings("ignore")
+    parser = argparse.ArgumentParser(description="Training config")
+    parser.add_argument("-c", '--config', default='', type=str, help="path of config")
+    parser.add_argument("-d", '--data', default='', type=str, help="path of data")
+    parser.add_argument("-s", '--save_interval', default=150, type=int, help="number of step to save")
+    parser.add_argument("-r", '--resume', default='', type=str, help="resume path")
+    args = parser.parse_args()
+    if args.data.strip():
+        for item in ["train", "valid", "test"]:
+            config[item]['dataset']['imgDir'] = os.path.join(args.data.strip(), item, "image/")
+    if args.resume.strip():
+        config['checkpoint']['resume'] = args.resume.strip()
+    trainer = PRENTrainer(**config, save_interval=args.save_interval)
+    trainer.train()

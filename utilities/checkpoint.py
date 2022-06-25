@@ -14,7 +14,7 @@ class PRENCheckpoint:
         self.workspace: str = workspace
         self.resume: str = resume
 
-    def save(self, model, optimizer, scheduler, epoch: int, step: int):
+    def save(self, model, optimizer, epoch: int, step: int):
         save_path: str = join(self.workspace, 'checkpoint{}.pth'.format(step))
         torch.save({
             'model': model.state_dict(),
@@ -23,7 +23,6 @@ class PRENCheckpoint:
         torch.save({
             'model': model.state_dict(),
             'optimizer': optimizer.state_dict(),
-            'scheduler': scheduler.state_dict(),
             'epoch': epoch,
             'step': step
         }, last_path)
