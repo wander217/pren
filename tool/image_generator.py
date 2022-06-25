@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--bg_path", default="", type=str, help="Path of background")
     args = parser.parse_args()
     os.mkdir(args.save_path)
-    i = 1
+    i = 2
     os.mkdir(os.path.join(args.save_path, "font_{}".format(i + 1)))
     generator(args.dict_path,
               args.bg_path,
