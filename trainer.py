@@ -1,8 +1,10 @@
 import argparse
+import os
 import warnings
 import numpy as np
 import torch
 import Levenshtein
+import yaml
 from torch import nn, optim, Tensor
 from structure import PRENModel
 from dataset import PRENLoader, Alphabet
@@ -85,7 +87,7 @@ class PRENTrainer:
                 test_result = self.test_step()
                 self.logger.train_report({
                     "train_loss": train_loss.calc(),
-                    "valid_loss": valid_loss,
+                    "valid_loss": valid_loss.calc(),
                     "test_result": test_result
                 })
                 self.logger.partition_report()
@@ -98,21 +100,21 @@ class PRENTrainer:
         self.model.eval()
         valid_loss: Averager = Averager()
         with torch.no_grad():
-            for batch, (image, target) in enumerate(self.valid_loader):
+            for _, (image, target) in enumerate(self.valid_loader):
                 bs = image.size(0)
                 image = image.to(self.device)
                 target = target.to(self.device)
                 pred: Tensor = self.model(image, target[:, :-1])
                 loss: Tensor = self.criterion(pred, target)
                 valid_loss.update(loss.item(), bs)
-        return valid_loss.calc()
+        return valid_loss
 
     def test_step(self):
         self.model.eval()
         test_acc: Averager = Averager()
         test_norm: Averager = Averager()
         with torch.no_grad():
-            for batch, (image, target) in enumerate(self.test_loader):
+            for _, (image, target) in enumerate(self.test_loader):
                 bs = image.size(0)
                 image = image.to(self.device)
                 target = target.to(self.device)
@@ -156,12 +158,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Training config")
     parser.add_argument("-c", '--config', default='', type=str, help="path of config")
     parser.add_argument("-d", '--data', default='', type=str, help="path of data")
-    parser.add_argument("-s", '--save_interval', default=150, type=int, help="number of step to save")
+    parser.add_argument("-s", '--save_interval', default=1000, type=int, help="number of step to save")
     parser.add_argument("-r", '--resume', default='', type=str, help="resume path")
     args = parser.parse_args()
+    with open(args.config) as f:
+        config = yaml.safe_load(f)
     if args.data.strip():
         for item in ["train", "valid", "test"]:
-            config[item]['dataset']['imgDir'] = os.path.join(args.data.strip(), item, "image/")
+            config[item]['dataset']['path'] = os.path.join(args.data.strip(), item, item)
     if args.resume.strip():
         config['checkpoint']['resume'] = args.resume.strip()
     trainer = PRENTrainer(**config, save_interval=args.save_interval)
