@@ -48,7 +48,7 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
             image_code = 'image-%09d' % (i1 + 1)
             label_code = 'label-%09d' % (i1 + 1)
             txn.put(label_code.encode(encoding='utf-8', errors='ignore'),
-                    item.encode(encoding='utf-8', errors='ignore'))
+                    item1.encode(encoding='utf-8', errors='ignore'))
             image.save("tmp.png")
             with open("tmp.png", 'rb') as f:
                 image_byte = f.read()
