@@ -1,0 +1,9 @@
+torch==1.11.0
+torchvision==0.12.0
+opencv-python~=4.6.0.66
+imgaug
+lmdb~=1.3.0
+PyYAML~=6.0
+numpy~=1.23.0
+Levenshtein~=0.18.1
+Pillow~=9.1.1

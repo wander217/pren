@@ -1,0 +1,48 @@
+total_epoch: 100
+start_epoch: 1
+save_interval: 1000
+clip_grad_norm: 1
+
+alphabet:
+  path: 'data/rec/config/viet_alphabet.txt'
+  max_len: 128
+
+model:
+  backbone:
+    name: "eb3"
+    n_output: 5
+    d_output: 384
+    dropout: 0.1
+
+train:
+  batch_size: 64
+  num_workers: 8
+  drop_last: True
+  shuffle: True
+  pin_memory: False
+  dataset:
+    path: '../input/long-text'
+
+valid:
+  batch_size: 64
+  num_workers: 8
+  drop_last: True
+  shuffle: False
+  pin_memory: False
+  dataset:
+    path: '../input/long-text'
+
+optimizer:
+  name: 'Adam'
+  params:
+    lr: 0.001
+    betas: [0.9, 0.98]
+    eps: !!float 1e-09
+
+checkpoint:
+  workspace: './'
+  resume: ''
+
+logger:
+  workspace: './'
+  level: 'INFO'
