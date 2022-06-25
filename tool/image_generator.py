@@ -68,7 +68,7 @@ if __name__ == "__main__":
     os.mkdir(args.save_path)
     for i, item in enumerate(os.listdir(args.font_path)):
         print(item)
-        os.mkdir("font_{}".format(i + 1))
+        os.mkdir(os.path.join(args.save_path, "font_{}".format(i + 1)))
         generator(args.dict_path,
                   args.bg_path,
                   os.path.join(args.save_path, "font_{}".format(i + 1)),
