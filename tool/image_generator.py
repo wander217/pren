@@ -37,7 +37,7 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
     bg_item = os.listdir(background_path)
     background = Image.open(os.path.join(background_path, random.choice(bg_item))).convert("RGB")
     padding = (10, 50)
-    env = lmdb.open(save_path, map_size=1099511627776)
+    env = lmdb.open(save_path, map_size=8589934592)
     sample = 0
     with env.begin(write=True) as txn:
         for i1, item1 in enumerate(line_dict):
@@ -66,10 +66,9 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--bg_path", default="", type=str, help="Path of background")
     args = parser.parse_args()
     os.mkdir(args.save_path)
-    for i, item in enumerate(os.listdir(args.font_path)):
-        print(item)
-        os.mkdir(os.path.join(args.save_path, "font_{}".format(i + 1)))
-        generator(args.dict_path,
-                  args.bg_path,
-                  os.path.join(args.save_path, "font_{}".format(i + 1)),
-                  os.path.join(args.font_path, item))
+    i = 1
+    os.mkdir(os.path.join(args.save_path, "font_{}".format(i + 1)))
+    generator(args.dict_path,
+              args.bg_path,
+              os.path.join(args.save_path, "font_{}".format(i + 1)),
+              args.font_path)
