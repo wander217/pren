@@ -82,7 +82,7 @@ class PRENTrainer:
             train_loss.update(loss.item() * bs, bs)
             if self.step % self.save_interval == 0:
                 self.logger.report_delimiter()
-                pred_text = pred[0].detach().argmax(1).cpu().numpy()
+                pred_text = torch.log_softmax(pred[0], dim=-1).detach().argmax(1).cpu().numpy()
                 pred_text = self.alphabet.decode(pred_text)
                 target_text = target[0].detach().cpu().numpy()
                 target_text = self.alphabet.decode(target_text)
@@ -137,7 +137,7 @@ class PRENTrainer:
         n_correct: int = 0
         norm_edit: int = 0
         bs = pred.size(0)
-        rp: np.ndarray = pred.softmax(dim=2).cpu().detach().numpy().argmax(axis=2)
+        rp: np.ndarray = torch.log_softmax(pred, dim=-1).cpu().detach().numpy().argmax(axis=2)
         rt: np.ndarray = target.cpu().detach().numpy()
         for i in range(bs):
             p_str: str = self.alphabet.decode(rp[i])
