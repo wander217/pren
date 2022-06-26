@@ -18,9 +18,8 @@ class Alphabet:
         self.int_dict[self.unk] = '<unk>'
 
     def encode(self, s: str) -> np.ndarray:
-        es = [self.char_dict.get(ch, self.unk) for ch in s]
+        es = [self.char_dict.get(ch, self.unk) for ch in s] + [self.end]
         es = np.pad(es, (0, self.max_len - len(es)), constant_values=self.pad)
-        es[-1] = self.end
         return es.astype(np.int64)
 
     def decode(self, es: np.ndarray) -> str:
