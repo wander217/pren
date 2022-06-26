@@ -44,6 +44,7 @@ class PRENLogger:
         keys: List = list(metric.keys())
         for key in keys:
             self._write("\t- {}: {}".format(key, metric[key]))
+        self.write(metric)
         self.report_delimiter()
         self.report_newline()
 
