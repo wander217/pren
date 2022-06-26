@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import torch
 from torch import nn, Tensor
-from dataset import Alphabet, resize, normalize
+from dataset import Alphabet, normalize
 from typing import Dict
 from structure import PREN
 import yaml

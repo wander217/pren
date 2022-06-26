@@ -4,7 +4,7 @@ import lmdb
 import cv2 as cv
 import numpy as np
 
-data_path = r'D:\text_recoginition\test\font_1'
+data_path = r'D:\text_recoginition\train\font_1'
 env = lmdb.open(data_path,
                 max_readers=8,
                 readonly=True,
