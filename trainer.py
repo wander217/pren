@@ -84,7 +84,7 @@ class PRENTrainer:
                 self.logger.report_delimiter()
                 pred_text = pred[0].detach().argmax(1).cpu().numpy()
                 pred_text = self.alphabet.decode(pred_text)
-                target_text = target[0].detach().argmax(1).cpu().numpy()
+                target_text = target[0].detach().cpu().numpy()
                 target_text = self.alphabet.decode(target_text)
                 self.logger.report_time("Epoch {} - step {}".format(epoch, self.step))
                 # valid_loss = self.valid_step()
