@@ -5,7 +5,7 @@ import lmdb
 import numpy as np
 from os import listdir
 from os.path import join
-from .alphabet import Alphabet
+from dataset.alphabet import Alphabet
 
 
 def normalize(image: np.ndarray):
