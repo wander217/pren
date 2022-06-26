@@ -3,12 +3,12 @@ start_epoch: 1
 
 alphabet:
   path: 'data/rec/config/viet_alphabet.txt'
-  max_len: 128
+  max_len: 125
 
 model:
   name: "eb0"
   hidden: [40, 112, 320]
-  n_output: 16
+  n_output: 25
   d_output: 384
   dropout: 0.1
 
