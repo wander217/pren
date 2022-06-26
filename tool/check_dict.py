@@ -11,10 +11,11 @@
 #         f.write("\n")
 import torch
 import torch.nn.functional as F
+import torch.nn as nn
 
 input = torch.randn(3, 5, requires_grad=True)
 print(torch.log_softmax(input, dim=-1))
 target = torch.randint(5, (3,), dtype=torch.int64)
 print(target)
-loss = F.cross_entropy(input, target)
+loss = nn.CrossEntropyLoss()(input, target)
 print(loss)

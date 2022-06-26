@@ -30,7 +30,7 @@ class PRENPredictor:
             input: Tensor = torch.from_numpy(image).unsqueeze(0)
             input = input.permute(0, 3, 1, 2).to(self.device)
             pred = self.model(input.float())
-            rp: np.ndarray = pred.softmax(dim=2).cpu().detach().numpy().argmax(axis=2)
+            rp: np.ndarray = torch.log_softmax(pred, dim=-1).cpu().detach().numpy().argmax(axis=2)
             p_str: str = self.alphabet.decode(rp[0])
             return p_str
 

@@ -36,7 +36,7 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
     font = ImageFont.truetype(font_path, size=30)
     bg_item = os.listdir(background_path)
     background = Image.open(os.path.join(background_path, random.choice(bg_item))).convert("RGB")
-    padding = (5, 10)
+    padding = (10, 30)
     env = lmdb.open(save_path, map_size=8589934592)
     sample = 0
     with env.begin(write=True) as txn:
