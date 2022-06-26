@@ -82,7 +82,7 @@ class PRENTrainer:
             train_loss.update(loss.item(), bs)
             if self.step % self.save_interval == 0:
                 self.logger.report_delimiter()
-                self.logger.report_time("epoch {} - step {}:".format(epoch, self.step))
+                self.logger.report_time("Epoch {} - step {}".format(epoch, self.step))
                 valid_loss = self.valid_step()
                 test_result = self.test_step()
                 self.logger.report_metric({
