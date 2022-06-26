@@ -73,7 +73,7 @@ if __name__ == "__main__":
     total_params = sum(p.numel() for p in model.parameters())
     train_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(total_params, train_params)
-    x = torch.randn((1, 3, 64, 1800))
+    x = torch.randn((1, 3, 32, 900))
     start = time.time()
     y = model(x)
     print(time.time() - start)

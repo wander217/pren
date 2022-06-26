@@ -66,6 +66,7 @@ class PRENDataset(Dataset):
         imgbuf = txn.get(img_code.encode())
         img = np.frombuffer(imgbuf, dtype=np.uint8)
         img = cv.imdecode(img, cv.IMREAD_COLOR)
+        img = cv.resize(img, (900, 32), interpolation=cv.INTER_CUBIC)
         img = normalize(img)
 
         label_code: str = 'label-%09d' % rid

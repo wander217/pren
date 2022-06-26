@@ -3,7 +3,7 @@ import torch
 from torch import nn, Tensor
 from dataset import Alphabet, resize, normalize
 from typing import Dict
-from structure import PRENModel
+from structure import PREN
 import yaml
 
 
@@ -15,7 +15,7 @@ class PRENPredictor:
         with open(config) as f:
             data: Dict = yaml.safe_load(f)
         self.alphabet: Alphabet = Alphabet(**data['alphabet'])
-        self.model: nn.Module = PRENModel(self.alphabet, **data['model'])
+        self.model: nn.Module = PREN(self.alphabet, **data['model'])
         # print(sum(p.numel() for p in self.model.parameters() if p.requires_grad))
         state_dict = torch.load(pretrained, map_location=self.device)
         self.model.load_state_dict(state_dict['model'])
@@ -23,7 +23,7 @@ class PRENPredictor:
     def predict(self, image: np.ndarray) -> str:
         self.model.eval()
         with torch.no_grad():
-            image = resize(image, [32, 128], 0)
+            image = resize(image, [32, 900], 0)
             image = normalize(image)
             input: Tensor = torch.from_numpy(image).unsqueeze(0)
             input = input.permute(0, 3, 1, 2).to(self.device)
