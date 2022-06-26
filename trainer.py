@@ -79,7 +79,7 @@ class PRENTrainer:
             self.model.zero_grad()
             loss.backward()
             self.optimizer.step()
-            train_loss.update(loss.item(), 1)
+            train_loss.update(loss.item(), bs)
             if self.step % self.save_interval == 0:
                 self.logger.report_delimiter()
                 self.logger.report_time("Epoch {} - step {}".format(epoch, self.step))
@@ -106,7 +106,7 @@ class PRENTrainer:
                 target = target.to(self.device)
                 pred: Tensor = self.model(image)
                 loss: Tensor = self.criterion(pred, target)
-                valid_loss.update(loss.item(), 1)
+                valid_loss.update(loss.item(), bs)
         return valid_loss
 
     def test_step(self):
