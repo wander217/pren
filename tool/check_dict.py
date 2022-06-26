@@ -7,5 +7,5 @@ with open(dict_path, 'r', encoding='utf-8') as f:
 
 with open(r"D:\workspace\project\pren\tool\checked_dict.txt", 'w', encoding='utf-8') as f:
     for item, _ in line_dict.items():
-        f.write(item)
+        f.write(item.strip())
         f.write("\n")

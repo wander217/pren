@@ -1,5 +1,6 @@
 from typing import Dict
 import numpy as np
+import unicodedata
 
 
 class Alphabet:
@@ -11,6 +12,7 @@ class Alphabet:
         with open(path, 'r', encoding='utf-8') as f:
             alphabet = f.readline().strip("\n").strip("\r\t").strip()
             alphabet = ' ' + alphabet
+            alphabet = unicodedata.normalize('NFC', alphabet)
         self.char_dict: Dict = {c: i + 3 for i, c in enumerate(alphabet)}
         self.int_dict: Dict = {i + 3: c for i, c in enumerate(alphabet)}
         self.int_dict[self.pad] = '<pad>'
@@ -18,6 +20,7 @@ class Alphabet:
         self.int_dict[self.unk] = '<unk>'
 
     def encode(self, s: str) -> np.ndarray:
+        s = unicodedata.normalize('NFC', s)
         es = [self.char_dict.get(ch, self.unk) for ch in s] + [self.end]
         es = np.pad(es, (0, self.max_len - len(es)), constant_values=self.pad)
         return es.astype(np.int64)
