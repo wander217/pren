@@ -79,7 +79,7 @@ class PRENTrainer:
             self.model.zero_grad()
             loss.backward()
             self.optimizer.step()
-            train_loss.update(loss.item(), bs)
+            train_loss.update(loss.item() * bs, bs)
             if self.step % self.save_interval == 0:
                 self.logger.report_delimiter()
                 pred_text = pred[0].detach().argmax(1).cpu().numpy()
@@ -112,7 +112,7 @@ class PRENTrainer:
                 target = target.to(self.device)
                 pred: Tensor = self.model(image)
                 loss: Tensor = self.criterion(pred, target)
-                valid_loss.update(loss.item(), bs)
+                valid_loss.update(loss.item() * bs, bs)
         return valid_loss
 
     def test_step(self):
