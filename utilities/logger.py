@@ -44,11 +44,11 @@ class PRENLogger:
         keys: List = list(metric.keys())
         for key in keys:
             self._write("\t- {}: {}".format(key, metric[key]))
-        self.write(metric)
+        self.write_metric(metric)
         self.report_delimiter()
         self.report_newline()
 
-    def write(self, metric: Dict):
+    def write_metric(self, metric: Dict):
         with open(self.metric_path, 'a', encoding='utf=8') as f:
             f.write(json.dumps(metric))
             f.write("\n")
