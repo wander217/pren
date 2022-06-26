@@ -64,9 +64,10 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--save_path", default="", type=str, help="Path of saving directory")
     parser.add_argument("-f", "--font_path", default="", type=str, help="Path of font directory")
     parser.add_argument("-b", "--bg_path", default="", type=str, help="Path of background")
+    parser.add_argument("-i", "--type", default="", type=str, help="type of dataset")
     args = parser.parse_args()
     os.mkdir(args.save_path)
-    i = 0
+    i = int(args.type)
     os.mkdir(os.path.join(args.save_path, "font_{}".format(i + 1)))
     generator(args.dict_path,
               args.bg_path,
