@@ -42,8 +42,8 @@ class PRENTrainer:
         cls = getattr(optim, optimizer['name'])
         self.optimizer: optim.Optimizer = cls(self.model.parameters(), **optimizer['params'])
         self.train_loader = PRENLoader(**train, alphabet=self.alphabet).build()
-        self.valid_loader = PRENLoader(**valid, alphabet=self.alphabet).build()
-        self.test_loader = PRENLoader(**test, alphabet=self.alphabet).build()
+        # self.valid_loader = PRENLoader(**valid, alphabet=self.alphabet).build()
+        # self.test_loader = PRENLoader(**test, alphabet=self.alphabet).build()
 
         self.logger: PRENLogger = PRENLogger(**logger)
         self.checkpoint: PRENCheckpoint = PRENCheckpoint(**checkpoint)
@@ -102,36 +102,36 @@ class PRENTrainer:
                     self.save()
             self.step += 1
 
-    def valid_step(self):
-        self.model.eval()
-        valid_loss: Averager = Averager()
-        with torch.no_grad():
-            for _, (image, target) in enumerate(self.valid_loader):
-                bs = image.size(0)
-                image = image.to(self.device)
-                target = target.to(self.device)
-                pred: Tensor = self.model(image)
-                loss: Tensor = self.criterion(pred, target)
-                valid_loss.update(loss.item() * bs, bs)
-        return valid_loss
-
-    def test_step(self):
-        self.model.eval()
-        test_acc: Averager = Averager()
-        test_norm: Averager = Averager()
-        with torch.no_grad():
-            for _, (image, target) in enumerate(self.test_loader):
-                bs = image.size(0)
-                image = image.to(self.device)
-                target = target.to(self.device)
-                pred: Tensor = self.model(image)
-                acc, norm = self._acc(pred, target)
-                test_acc.update(acc, bs)
-                test_norm.update(norm, bs)
-        return {
-            "test_acc": test_acc.calc(),
-            "test_norm": test_norm.calc()
-        }
+    # def valid_step(self):
+    #     self.model.eval()
+    #     valid_loss: Averager = Averager()
+    #     with torch.no_grad():
+    #         for _, (image, target) in enumerate(self.valid_loader):
+    #             bs = image.size(0)
+    #             image = image.to(self.device)
+    #             target = target.to(self.device)
+    #             pred: Tensor = self.model(image)
+    #             loss: Tensor = self.criterion(pred, target)
+    #             valid_loss.update(loss.item() * bs, bs)
+    #     return valid_loss
+    #
+    # def test_step(self):
+    #     self.model.eval()
+    #     test_acc: Averager = Averager()
+    #     test_norm: Averager = Averager()
+    #     with torch.no_grad():
+    #         for _, (image, target) in enumerate(self.test_loader):
+    #             bs = image.size(0)
+    #             image = image.to(self.device)
+    #             target = target.to(self.device)
+    #             pred: Tensor = self.model(image)
+    #             acc, norm = self._acc(pred, target)
+    #             test_acc.update(acc, bs)
+    #             test_norm.update(norm, bs)
+    #     return {
+    #         "test_acc": test_acc.calc(),
+    #         "test_norm": test_norm.calc()
+    #     }
 
     def _acc(self, pred: Tensor, target: Tensor) -> Tuple:
         n_correct: int = 0
