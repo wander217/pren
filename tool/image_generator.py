@@ -35,7 +35,6 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
         line_dict = [line.strip() for line in f.readlines()]
     font = ImageFont.truetype(font_path, size=30)
     bg_item = os.listdir(background_path)
-    background = Image.open(os.path.join(background_path, random.choice(bg_item))).convert("RGB")
     padding = (10, 30)
     env = lmdb.open(save_path, map_size=8589934592)
     sample = 0
@@ -43,6 +42,7 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
         for i1, item1 in enumerate(line_dict):
             if i1 % 10000 == 0:
                 print(i1, item1)
+            background = Image.open(os.path.join(background_path, random.choice(bg_item))).convert("RGB")
             image = generate_image(item1, background, font, padding)
 
             image_code = 'image-%09d' % (i1 + 1)
