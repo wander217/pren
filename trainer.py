@@ -157,12 +157,15 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     parser = argparse.ArgumentParser(description="Training config")
     parser.add_argument("-c", '--config', default='', type=str, help="path of config")
+    parser.add_argument("-a", '--alphabet', default='', type=str, help="path of alphabet")
     parser.add_argument("-d", '--data', default='', type=str, help="path of data")
     parser.add_argument("-s", '--save_interval', default=1000, type=int, help="number of step to save")
     parser.add_argument("-r", '--resume', default='', type=str, help="resume path")
     args = parser.parse_args()
     with open(args.config) as f:
         config = yaml.safe_load(f)
+    if args.alphabet.strip():
+        config['alphabet']['path'] = args.alphabet.strip()
     if args.data.strip():
         for item in ["train", "valid", "test"]:
             config[item]['dataset']['path'] = os.path.join(args.data.strip(), item, item)
