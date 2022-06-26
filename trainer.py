@@ -51,21 +51,21 @@ class PRENTrainer:
 
     def train(self):
         self.load()
-        self.logger.partition_report()
-        self.logger.time_report("Starting:")
-        self.logger.partition_report()
+        self.logger.report_delimiter()
+        self.logger.report_time("Starting:")
+        self.logger.report_delimiter()
         for epoch in range(self.start_epoch, self.total_epoch + 1):
             self.train_step(epoch)
-        self.logger.partition_report()
-        self.logger.time_report("Finish:")
-        self.logger.partition_report()
+        self.logger.report_delimiter()
+        self.logger.report_time("Finish:")
+        self.logger.report_delimiter()
 
     def save(self):
-        self.logger.partition_report()
-        self.logger.time_report("Saving:")
+        self.logger.report_delimiter()
+        self.logger.report_time("Saving:")
         self.checkpoint.save(self.model, self.optimizer, self.step)
-        self.logger.time_report("Saving complete!")
-        self.logger.partition_report()
+        self.logger.report_time("Saving complete!")
+        self.logger.report_delimiter()
 
     def train_step(self, epoch: int):
         train_loss: Averager = Averager()
