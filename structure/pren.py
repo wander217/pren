@@ -57,7 +57,7 @@ class PREN(nn.Module):
         self.fc: nn.Module = nn.Linear(d_output, alphabet.size())
         self.fc.apply(weight_init)
 
-    def forward(self, image: Tensor) -> Tuple:
+    def forward(self, image: Tensor) -> Tensor:
         """
             :param image: (B, 3, 32, 128)
             :return: f1, f2, f3 : Là các feature từ eft_net
@@ -74,7 +74,7 @@ class PREN(nn.Module):
         wp3: Tensor = self.wgg3(f3)
         wp: Tensor = self.w_gate(torch.cat([wp1, wp2, wp3], dim=2))
         score: Tensor = (rp + wp) / 2
-        pred = self.fc(score)
+        pred = torch.softmax(self.fc(score), dim=-1)
         return pred
 
 
