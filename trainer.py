@@ -75,7 +75,7 @@ class PRENTrainer:
             image = image.to(self.device)
             target = target.to(self.device)
             pred: Tensor = self.model(image)
-            loss: Tensor = self.criterion(pred, target[:, :-1])
+            loss: Tensor = self.criterion(pred, target)
             self.model.zero_grad()
             loss.backward()
             self.optimizer.step()
@@ -105,7 +105,7 @@ class PRENTrainer:
                 image = image.to(self.device)
                 target = target.to(self.device)
                 pred: Tensor = self.model(image)
-                loss: Tensor = self.criterion(pred, target[:, :-1])
+                loss: Tensor = self.criterion(pred, target)
                 valid_loss.update(loss.item(), bs)
         return valid_loss
 
