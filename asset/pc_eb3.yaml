@@ -12,7 +12,7 @@ model:
   dropout: 0.1
 
 train:
-  batch_size: 64
+  batch_size: 32
   num_workers: 8
   drop_last: True
   shuffle: True
@@ -21,7 +21,7 @@ train:
     path: '../input/long-text'
 
 valid:
-  batch_size: 64
+  batch_size: 32
   num_workers: 8
   drop_last: True
   shuffle: False
@@ -30,7 +30,7 @@ valid:
     path: '../input/long-text'
 
 test:
-  batch_size: 64
+  batch_size: 32
   num_workers: 8
   drop_last: True
   shuffle: False
