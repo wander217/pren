@@ -86,7 +86,7 @@ class EfficientNet(nn.Module):
                 stage_block_id += 1
 
             layers.append(nn.Sequential(*stage))
-        self.layers: nn.Module = nn.ModuleList(layers)
+        self.layers: nn.ModuleList = nn.ModuleList(layers)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):

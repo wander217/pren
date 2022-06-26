@@ -6,7 +6,7 @@ from torch import nn, Tensor
 from dataset import Alphabet
 from structure.backbone.eft_net import eft_builder
 from structure.backbone.element import WeightAggregation, GateConv, PoolAggregation
-from typing import Tuple
+from typing import Tuple, List
 
 
 def weight_init(m):
@@ -28,17 +28,23 @@ def weight_init(m):
 
 
 class PREN(nn.Module):
-    def __init__(self, alphabet: Alphabet, name: str, n_output: int, d_output: int, dropout: float):
+    def __init__(self,
+                 alphabet: Alphabet,
+                 hidden: List,
+                 name: str,
+                 n_output: int,
+                 d_output: int,
+                 dropout: float):
         super().__init__()
         self.eft_net: nn.Module = eft_builder(name)
-        self.pgg1: nn.Module = PoolAggregation(48, 48, n_output, d_output // 3)
-        self.pgg2: nn.Module = PoolAggregation(136, 136, n_output, d_output // 3)
-        self.pgg3: nn.Module = PoolAggregation(384, 384, n_output, d_output // 3)
+        self.pgg1: nn.Module = PoolAggregation(hidden[0], hidden[0], n_output, d_output // 3)
+        self.pgg2: nn.Module = PoolAggregation(hidden[1], hidden[1], n_output, d_output // 3)
+        self.pgg3: nn.Module = PoolAggregation(hidden[2], hidden[2], n_output, d_output // 3)
         self.p_gate: nn.Module = GateConv(n_output, alphabet.max_len, d_output, d_output, dropout)
 
-        self.wgg1: nn.Module = WeightAggregation(48, 48, n_output, d_output // 3)
-        self.wgg2: nn.Module = WeightAggregation(136, 136, n_output, d_output // 3)
-        self.wgg3: nn.Module = WeightAggregation(384, 384, n_output, d_output // 3)
+        self.wgg1: nn.Module = WeightAggregation(hidden[0], hidden[0], n_output, d_output // 3)
+        self.wgg2: nn.Module = WeightAggregation(hidden[1], hidden[1], n_output, d_output // 3)
+        self.wgg3: nn.Module = WeightAggregation(hidden[2], hidden[2], n_output, d_output // 3)
         self.w_gate: nn.Module = GateConv(n_output, alphabet.max_len, d_output, d_output, dropout)
         self.fc: nn.Module = nn.Linear(d_output, alphabet.size())
         self.apply(weight_init)
@@ -65,7 +71,7 @@ class PREN(nn.Module):
 
 
 if __name__ == "__main__":
-    config_path = r'D:\workspace\project\pren\asset\pc_eb3.yaml'
+    config_path = r'D:\workspace\project\pren\asset\pc_eb0.yaml'
     with open(config_path) as f:
         config = yaml.safe_load(f)
     alphabet = Alphabet(r'D:\workspace\project\pren\asset\viet_alphabet.txt', 256)
