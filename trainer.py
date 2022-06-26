@@ -60,10 +60,10 @@ class PRENTrainer:
         self.logger.time_report("Finish:")
         self.logger.partition_report()
 
-    def save(self, epoch: int):
+    def save(self):
         self.logger.partition_report()
         self.logger.time_report("Saving:")
-        self.checkpoint.save(self.model, self.optimizer, epoch, self.step)
+        self.checkpoint.save(self.model, self.optimizer, self.step)
         self.logger.time_report("Saving complete!")
         self.logger.partition_report()
 
@@ -93,7 +93,7 @@ class PRENTrainer:
                 self.logger.partition_report()
                 train_loss.clear()
                 if self.step > 0:
-                    self.save(epoch)
+                    self.save()
             self.step += 1
 
     def valid_step(self):
