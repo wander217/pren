@@ -24,8 +24,8 @@ def generate_image(text, background, font, padding):
     image_draw.text((pw, ph), text, fill=(0, 0, 0), font=font)
     text_image = copy.deepcopy(background).resize((new_w, new_h))
     text_image.paste(image, (0, 0), image)
-    text_image = resize(text_image, (new_w, new_h), 64)
-    padded_image = Image.new("RGB", (1800, 64))
+    text_image = resize(text_image, (new_w, new_h), 32)
+    padded_image = Image.new("RGB", (900, 32))
     padded_image.paste(text_image, (0, 0))
     return padded_image
 
@@ -36,7 +36,7 @@ def generator(dict_path: str, background_path: str, save_path: str, font_path: s
     font = ImageFont.truetype(font_path, size=30)
     bg_item = os.listdir(background_path)
     background = Image.open(os.path.join(background_path, random.choice(bg_item))).convert("RGB")
-    padding = (10, 50)
+    padding = (10, 20)
     env = lmdb.open(save_path, map_size=8589934592)
     sample = 0
     with env.begin(write=True) as txn:

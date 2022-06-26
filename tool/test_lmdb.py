@@ -22,7 +22,7 @@ imgbuf = txn.get(img_code.encode())
 img = np.frombuffer(imgbuf, dtype=np.uint8)
 img = cv.imdecode(img, cv.IMREAD_COLOR)
 # img = img[10: -10, :, :]
-img = cv.resize(img, (900, 32), interpolation=cv.INTER_CUBIC)
+# img = cv.resize(img, (900, 32), interpolation=cv.INTER_CUBIC)
 
 
 label_code: str = 'label-%09d' % id
