@@ -1,1 +1,1 @@
-from structure.pren_model import PRENModel
+from structure.pren import PREN

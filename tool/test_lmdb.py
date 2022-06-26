@@ -4,7 +4,7 @@ import lmdb
 import cv2 as cv
 import numpy as np
 
-data_path = r'D:\text_recoginition\train\font_2'
+data_path = r'D:\text_recoginition\train\font_3'
 env = lmdb.open(data_path,
                 max_readers=8,
                 readonly=True,
@@ -21,7 +21,9 @@ img_code: str = 'image-%09d' % id
 imgbuf = txn.get(img_code.encode())
 img = np.frombuffer(imgbuf, dtype=np.uint8)
 img = cv.imdecode(img, cv.IMREAD_COLOR)
-img = cv.resize(img, (img.shape[1] // 2, img.shape[0] // 2), interpolation=cv.INTER_CUBIC)
+# img = img[10: -10, :, :]
+# img = cv.resize(img, (img.shape[1] // 2, img.shape[0] // 2), interpolation=cv.INTER_CUBIC)
+print(img.shape)
 
 label_code: str = 'label-%09d' % id
 byte_label: bytes = txn.get(label_code.encode())

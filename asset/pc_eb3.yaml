@@ -6,11 +6,10 @@ alphabet:
   max_len: 128
 
 model:
-  backbone:
-    name: "eb3"
-    n_output: 5
-    d_output: 384
-    dropout: 0.1
+  name: "eb3"
+  n_output: 5
+  d_output: 384
+  dropout: 0.1
 
 train:
   batch_size: 64

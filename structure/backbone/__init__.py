@@ -1,1 +1,1 @@
-from .pren_backbone import ATTRBackbone
+from structure.backbone.eft_net import eft_builder

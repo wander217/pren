@@ -1,12 +1,33 @@
+import time
+
 import torch
+import yaml
 from torch import nn, Tensor
 from dataset import Alphabet
-from .eft_net import eft_builder
-from .element import WeightAggregation, GateConv, PoolAggregation
+from structure.backbone.eft_net import eft_builder
+from structure.backbone.element import WeightAggregation, GateConv, PoolAggregation
 from typing import Tuple
 
 
-class ATTRBackbone(nn.Module):
+def weight_init(m):
+    if isinstance(m, nn.Conv1d):
+        nn.init.normal_(m.weight.data)
+        if m.bias is not None:
+            nn.init.normal_(m.bias.data)
+    elif isinstance(m, nn.Conv2d):
+        nn.init.xavier_normal_(m.weight.data)
+        if m.bias is not None:
+            nn.init.normal_(m.bias.data)
+    elif isinstance(m, nn.BatchNorm2d):
+        nn.init.normal_(m.weight.data, mean=1, std=0.02)
+        nn.init.constant_(m.bias.data, 0)
+    elif isinstance(m, nn.Linear):
+        nn.init.xavier_normal_(m.weight.data)
+        if m.bias is not None:
+            nn.init.normal_(m.bias.data)
+
+
+class PREN(nn.Module):
     def __init__(self, alphabet: Alphabet, name: str, n_output: int, d_output: int, dropout: float):
         super().__init__()
         self.eft_net: nn.Module = eft_builder(name)
@@ -20,6 +41,7 @@ class ATTRBackbone(nn.Module):
         self.wgg3: nn.Module = WeightAggregation(384, 384, n_output, d_output // 3)
         self.w_gate: nn.Module = GateConv(n_output, alphabet.max_len, d_output, d_output, dropout)
         self.fc: nn.Module = nn.Linear(d_output, alphabet.size())
+        self.apply(weight_init)
 
     def forward(self, image: Tensor) -> Tuple:
         """
@@ -40,3 +62,19 @@ class ATTRBackbone(nn.Module):
         score: Tensor = (rp + wp) / 2
         pred = self.fc(score)
         return pred
+
+
+if __name__ == "__main__":
+    config_path = r'D:\workspace\project\pren\asset\pc_eb3.yaml'
+    with open(config_path) as f:
+        config = yaml.safe_load(f)
+    alphabet = Alphabet(r'D:\workspace\project\pren\asset\viet_alphabet.txt', 256)
+    model = PREN(**config['model'], alphabet=alphabet)
+    total_params = sum(p.numel() for p in model.parameters())
+    train_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(total_params, train_params)
+    x = torch.randn((1, 3, 64, 1800))
+    start = time.time()
+    y = model(x)
+    print(time.time() - start)
+    print(y.size())
