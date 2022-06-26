@@ -38,16 +38,24 @@ class PREN(nn.Module):
         super().__init__()
         self.eft_net: nn.Module = eft_builder(name)
         self.pgg1: nn.Module = PoolAggregation(hidden[0], hidden[0], n_output, d_output // 3)
+        self.pgg1.apply(weight_init)
         self.pgg2: nn.Module = PoolAggregation(hidden[1], hidden[1], n_output, d_output // 3)
+        self.pgg2.apply(weight_init)
         self.pgg3: nn.Module = PoolAggregation(hidden[2], hidden[2], n_output, d_output // 3)
+        self.pgg3.apply(weight_init)
         self.p_gate: nn.Module = GateConv(n_output, alphabet.max_len, d_output, d_output, dropout)
+        self.p_gate.apply(weight_init)
 
         self.wgg1: nn.Module = WeightAggregation(hidden[0], hidden[0], n_output, d_output // 3)
+        self.wgg1.apply(weight_init)
         self.wgg2: nn.Module = WeightAggregation(hidden[1], hidden[1], n_output, d_output // 3)
+        self.pgg2.apply(weight_init)
         self.wgg3: nn.Module = WeightAggregation(hidden[2], hidden[2], n_output, d_output // 3)
+        self.wgg3.apply(weight_init)
         self.w_gate: nn.Module = GateConv(n_output, alphabet.max_len, d_output, d_output, dropout)
+        self.w_gate.apply(weight_init)
         self.fc: nn.Module = nn.Linear(d_output, alphabet.size())
-        self.apply(weight_init)
+        self.fc.apply(weight_init)
 
     def forward(self, image: Tensor) -> Tuple:
         """
