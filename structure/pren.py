@@ -73,7 +73,7 @@ class PREN(nn.Module):
         wp3: Tensor = self.wgg3(f3)
         wp: Tensor = self.w_gate(torch.cat([wp1, wp2, wp3], dim=2))
         score: Tensor = (rp + wp) / 2
-        pred = torch.softmax(self.fc(score), dim=-1)
+        pred = self.fc(score)
         return pred
 
 
