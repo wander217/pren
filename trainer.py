@@ -6,7 +6,7 @@ import torch
 import Levenshtein
 import yaml
 from torch import nn, optim, Tensor
-from structure import PRENModel
+from structure import PREN
 from dataset import PRENLoader, Alphabet
 from typing import Dict, Tuple
 from utilities.averager import Averager
@@ -35,7 +35,7 @@ class PRENTrainer:
         self.start_epoch: int = start_epoch
 
         self.alphabet: alphabet = Alphabet(**alphabet)
-        self.model: nn.Module = PRENModel(**model, alphabet=self.alphabet)
+        self.model: nn.Module = PREN(**model, alphabet=self.alphabet)
         self.model = self.model.to(self.device)
         self.criterion: nn.Module = AttnLoss(self.alphabet.pad)
         self.criterion = self.criterion.to(self.device)
@@ -74,8 +74,8 @@ class PRENTrainer:
             bs = image.size(0)
             image = image.to(self.device)
             target = target.to(self.device)
-            pred: Tensor = self.model(image, target[:, :-1])
-            loss: Tensor = self.criterion(pred, target)
+            pred: Tensor = self.model(image)
+            loss: Tensor = self.criterion(pred, target[:, :-1])
             self.model.zero_grad()
             loss.backward()
             self.optimizer.step()
@@ -104,8 +104,8 @@ class PRENTrainer:
                 bs = image.size(0)
                 image = image.to(self.device)
                 target = target.to(self.device)
-                pred: Tensor = self.model(image, target[:, :-1])
-                loss: Tensor = self.criterion(pred, target)
+                pred: Tensor = self.model(image)
+                loss: Tensor = self.criterion(pred, target[:, :-1])
                 valid_loss.update(loss.item(), bs)
         return valid_loss
 
@@ -118,7 +118,7 @@ class PRENTrainer:
                 bs = image.size(0)
                 image = image.to(self.device)
                 target = target.to(self.device)
-                pred: Tensor = self.model(image, target[:, :-1])
+                pred: Tensor = self.model(image)
                 acc, norm = self._acc(pred, target)
                 test_acc.update(acc, bs)
                 test_norm.update(norm, bs)
