@@ -1,12 +1,11 @@
 import time
-
 import torch
 import yaml
 from torch import nn, Tensor
 from dataset import Alphabet
 from structure.backbone.eft_net import eft_builder
 from structure.backbone.element import WeightAggregation, GateConv, PoolAggregation
-from typing import Tuple, List
+from typing import List
 
 
 def weight_init(m):
