@@ -81,16 +81,16 @@ class PRENTrainer:
             self.optimizer.step()
             train_loss.update(loss.item(), bs)
             if self.step % self.save_interval == 0:
-                self.logger.partition_report()
-                self.logger.time_report("epoch {} - step {}:".format(epoch, self.step))
+                self.logger.report_delimiter()
+                self.logger.report_time("epoch {} - step {}:".format(epoch, self.step))
                 valid_loss = self.valid_step()
                 test_result = self.test_step()
-                self.logger.train_report({
+                self.logger.report_metric({
                     "train_loss": train_loss.calc(),
                     "valid_loss": valid_loss.calc(),
-                    "test_result": test_result
+                    **test_result
                 })
-                self.logger.partition_report()
+                self.logger.report_delimiter()
                 train_loss.clear()
                 if self.step > 0:
                     self.save()
@@ -123,8 +123,8 @@ class PRENTrainer:
                 test_acc.update(acc, bs)
                 test_norm.update(norm, bs)
         return {
-            "acc": test_acc.calc(),
-            "norm": test_norm.calc()
+            "test_acc": test_acc.calc(),
+            "test_norm": test_norm.calc()
         }
 
     def _acc(self, pred: Tensor, target: Tensor) -> Tuple:

@@ -33,42 +33,31 @@ class PRENLogger:
         self.time: float = time.time()
         self.metric_path: str = join(workspace, "metric.txt")
 
-    def time_report(self, name: str):
-        tmp: float = time.time()
-        self.__write(name + " - time: {}".format(tmp - self.time))
-        self.time = tmp
+    def report_time(self, name: str):
+        current: float = time.time()
+        self._write(name + " - time: {}".format(current - self._time))
 
-    def best_loss_report(self, best_loss: float):
-        self.__write("best_loss: {}".format(best_loss))
+    def report_metric(self, metric: Dict):
+        self.report_delimiter()
+        keys: List = list(metric.keys())
+        for key in keys:
+            self._write("\t- {}: {}".format(key, metric[key]))
+        self.report_delimiter()
+        self.report_newline()
 
-    def train_report(self, train_rs: dict):
-        train_log: str = 'train_loss: {}, train_acc: {}, train_norm:{}'.format(
-            train_rs['train_loss'], train_rs['train_acc'], train_rs['train_norm']
-        )
-        self.__write(train_log)
-        metric = open(self.metric_path, 'a')
-        metric.write(json.dumps(train_rs))
-        metric.write("\n")
-        metric.close()
+    def write(self, metric: Dict):
+        with open(self._save_path, 'a', encoding='utf=8') as f:
+            f.write(json.dumps(metric))
+            f.write("\n")
 
-    def valid_report(self, valid_rs: dict):
-        train_log: str = 'valid_loss: {}, valid_acc: {}'.format(
-            valid_rs['valid_loss'], valid_rs['valid_acc']
-        )
-        self.__write(train_log)
-        metric = open(self.metric_path, 'a')
-        metric.write(json.dumps(valid_rs))
-        metric.write("\n")
-        metric.close()
+    def report_delimiter(self):
+        self._write("-" * 33)
 
-    def partition_report(self):
-        self.__write("-" * 55)
+    def report_newline(self):
+        self._write("")
 
-    def space_report(self):
-        self.__write("\n")
-
-    def __write(self, message: str):
-        if self.level == logging.INFO:
-            self.logger.info(message)
-        else:
-            self.logger.debug(message)
+    def _write(self, message: str):
+        if self._level == logging.INFO:
+            self._logger.info(message)
+            return
+        self._logger.debug(message)
