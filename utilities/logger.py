@@ -3,6 +3,7 @@ from os.path import join, isdir
 from os import mkdir
 import time
 import json
+from typing import Dict, List
 
 
 class PRENLogger:
@@ -35,7 +36,8 @@ class PRENLogger:
 
     def report_time(self, name: str):
         current: float = time.time()
-        self._write(name + " - time: {}".format(current - self._time))
+        self._write(name + " - time: {}".format(current - self.time))
+        self.time = current
 
     def report_metric(self, metric: Dict):
         self.report_delimiter()
@@ -46,7 +48,7 @@ class PRENLogger:
         self.report_newline()
 
     def write(self, metric: Dict):
-        with open(self._save_path, 'a', encoding='utf=8') as f:
+        with open(self.metric_path, 'a', encoding='utf=8') as f:
             f.write(json.dumps(metric))
             f.write("\n")
 
@@ -57,7 +59,7 @@ class PRENLogger:
         self._write("")
 
     def _write(self, message: str):
-        if self._level == logging.INFO:
-            self._logger.info(message)
+        if self.level == logging.INFO:
+            self.logger.info(message)
             return
-        self._logger.debug(message)
+        self.logger.debug(message)
