@@ -83,11 +83,11 @@ class PRENTrainer:
             if self.step % self.save_interval == 0:
                 self.logger.report_delimiter()
                 self.logger.report_time("Epoch {} - step {}".format(epoch, self.step))
-                valid_loss = self.valid_step()
+                # valid_loss = self.valid_step()
                 # test_result = self.test_step()
                 self.logger.report_metric({
                     "train_loss": train_loss.calc(),
-                    "valid_loss": valid_loss.calc(),
+                    # "valid_loss": valid_loss.calc(),
                     # **test_result
                 })
                 self.logger.report_delimiter()
