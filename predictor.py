@@ -37,7 +37,7 @@ class PRENPredictor:
 
 if __name__ == "__main__":
     config = r'D:\workspace\project\pren\asset\pc_eb3.yaml'
-    pretrained = r'D:\workspace\project\pren\pretrained\checkpoint5000.pth'
+    pretrained = r'D:\workspace\project\pren\pretrained\checkpoint14000.pth'
     alphabet = r'D:\workspace\project\pren\asset\viet_alphabet.txt'
     predictor = PRENPredictor(config=config, pretrained=pretrained, alphabet=alphabet)
     image = cv2.imread(r'D:\workspace\project\pren\tool\abc.png')

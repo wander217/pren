@@ -82,11 +82,17 @@ class PRENTrainer:
             train_loss.update(loss.item(), bs)
             if self.step % self.save_interval == 0:
                 self.logger.report_delimiter()
+                pred_text = pred[0].detach().argmax(1).cpu().numpy()
+                pred_text = self.alphabet.decode(pred_text)
+                target_text = target[0].detach().argmax(1).cpu().numpy()
+                target_text = self.alphabet.decode(target_text)
                 self.logger.report_time("Epoch {} - step {}".format(epoch, self.step))
                 # valid_loss = self.valid_step()
                 # test_result = self.test_step()
                 self.logger.report_metric({
                     "train_loss": train_loss.calc(),
+                    "pred_text": pred_text,
+                    "target_text": target_text
                     # "valid_loss": valid_loss.calc(),
                     # **test_result
                 })
