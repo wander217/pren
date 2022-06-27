@@ -155,8 +155,8 @@ class PRENTrainer:
         if state_dict is not None:
             self.model.load_state_dict(state_dict['model'])
             self.optimizer.load_state_dict(state_dict['optimizer'])
-            self.start_epoch = state_dict['epoch'] + 1
-            self.step = state_dict['step'] + 1
+            # self.start_epoch = state_dict['epoch'] + 1
+            self.step = state_dict['step']
 
 
 if __name__ == "__main__":

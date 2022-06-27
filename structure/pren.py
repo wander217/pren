@@ -78,10 +78,10 @@ class PREN(nn.Module):
 
 
 if __name__ == "__main__":
-    config_path = r'D:\workspace\project\pren\asset\pc_eb0.yaml'
+    config_path = r'D:\python_project\pren\asset\pc_eb0.yaml'
     with open(config_path) as f:
         config = yaml.safe_load(f)
-    alphabet = Alphabet(r'D:\workspace\project\pren\asset\viet_alphabet.txt', 125)
+    alphabet = Alphabet(r'D:\python_project\pren\asset\viet_alphabet.txt', 125)
     model = PREN(**config['model'], alphabet=alphabet)
     total_params = sum(p.numel() for p in model.parameters())
     train_params = sum(p.numel() for p in model.parameters() if p.requires_grad)

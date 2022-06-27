@@ -36,9 +36,9 @@ class PRENPredictor:
 
 
 if __name__ == "__main__":
-    config = r'D:\workspace\project\pren\asset\pc_eb3.yaml'
+    config = r'D:\python_project\pren\asset\pc_eb0.yaml'
     pretrained = r'D:\workspace\project\pren\pretrained\checkpoint14000.pth'
-    alphabet = r'D:\workspace\project\pren\asset\viet_alphabet.txt'
+    alphabet = r'D:\python_project\pren\asset\viet_alphabet.txt'
     predictor = PRENPredictor(config=config, pretrained=pretrained, alphabet=alphabet)
     image = cv2.imread(r'D:\workspace\project\pren\tool\abc.png')
     ans = predictor.predict(image)
