@@ -25,7 +25,6 @@ class PRENPredictor:
     def predict(self, image: np.ndarray) -> str:
         self.model.eval()
         with torch.no_grad():
-            # image = resize(image, [32, 900], 0)
             image = normalize(image)
             input: Tensor = torch.from_numpy(image).unsqueeze(0)
             input = input.permute(0, 3, 1, 2).to(self.device)
@@ -40,6 +39,6 @@ if __name__ == "__main__":
     pretrained = r'D:\python_project\pren\pretrained\checkpoint56000.pth'
     alphabet = r'D:\python_project\pren\asset\viet_alphabet.txt'
     predictor = PRENPredictor(config=config, pretrained=pretrained, alphabet=alphabet)
-    image = cv2.imread(r'D:\workspace\project\pren\tool\abc.png')
+    image = cv2.imread(r'D:\python_project\pren\tool\abc.png')
     ans = predictor.predict(image)
     print(ans)
