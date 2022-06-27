@@ -156,7 +156,7 @@ class PRENTrainer:
             self.model.load_state_dict(state_dict['model'])
             self.optimizer.load_state_dict(state_dict['optimizer'])
             # self.start_epoch = state_dict['epoch'] + 1
-            self.step = state_dict['step']
+            self.step = state_dict['step'] + 1
 
 
 if __name__ == "__main__":
